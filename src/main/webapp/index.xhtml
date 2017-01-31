@@ -11,95 +11,17 @@
     </h:head>
 
     <h:body>
-        <h:form id="nameForm" >
-            <h2>Welcome: <h:outputText value="#{playerController.player.userName}" /></h2>
-            <h:inputText id="username" value="#{playerController.player.userName}" />
-            <h:commandButton value="Set Username" >
-                <f:ajax execute="username" render="@form" />
-            </h:commandButton>
 
-
-        </h:form>
-
-        <h:form id="gameMessages" >
-
-            <table>
-
-                <ui:repeat value="#{playerController.game.gameMessages}" var="message">
-                    <tr>
-                        <td>
-                            <h:outputText value="#{message}" />
-                        </td>
-                    </tr>
-                </ui:repeat>
+        <table>
+            <tr><td><h5>Table Name</h5></td><td><h5>Players</h5></td></tr>
+            <ui:repeat value="#{indexController.allTables}" var="table">
                 <tr>
-                    <td>
-                        <h:inputText value="#{playerController.gameMessage}" />            
-                    </td>
-
-                    <td>
-                        <h:commandButton id="sendMessage" value="Send Message" action="#{playerController.sendGameMessage()}" >
-                            <f:ajax execute="@form" render="@form" />
-
-                        </h:commandButton>            
-
-                    </td>
+                    <td><h:outputText value="#{table.tableName}" /></td>
+                    <td><h:outputText value="#{table.getNumberOfPlayers()}" /></td>
                 </tr>
-            </table>
+            </ui:repeat>
 
-
-        </h:form>
-
-
-
-        <h:form id="game" >
-            <div id="dealerCards" >
-                <table>
-                    <tr>
-
-                        <ui:repeat value="#{playerController.game.dealerCards}" var="card">
-                            <td>#{card}</td>
-                        </ui:repeat>
-                    </tr>
-                </table>
-                <h2>Dealer Cards Value: #{playerController.game.dealerNumber} </h2>
-            </div>
-
-            <table>
-                <tr>
-                    <ui:repeat value="#{playerController.game.seats}" var="seat">
-                        <td>
-                            <table>
-                                <tr>
-                                    <h:panelGroup rendered="#{seat.player!=null}">
-                                        <td>
-                                            <h:commandButton value="Join Seat">
-                                                <f:ajax execute="#{playerController.joinSeat(seat)}" render="@form" />
-                                            </h:commandButton>
-                                        </td>
-                                    </h:panelGroup>
-                                    <ui:repeat value="#{seat.hand.playerCards}" var="card">
-                                        <td>#{card}</td>
-                                    </ui:repeat>
-                                    <h:panelGroup rendered="#{playerController.playerIsInSeat(seat)}">
-                                        <h:commandButton value="Leave Seat" >
-                                            <f:ajax execute="#{playerController.leaveSeat(seat)}" render="@form"/>
-                                        </h:commandButton>
-                                    </h:panelGroup>
-
-                                </tr>
-                            </table>
-                        </td>
-                    </ui:repeat>
-                    <h:panelGroup rendered="#{seat.hand!=null}">
-                        <h2>Player Cards Value: #{hand.playerNumber}</h2>
-                    </h:panelGroup>
-
-                </tr>
-            </table>
-
-        </h:form>
-
+        </table>
 
     </h:body>
 </html>
