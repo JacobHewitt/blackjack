@@ -5,6 +5,7 @@
  */
 package com.mycompany.blackjack.controller;
 
+import com.mycompany.blackjack.model.Action;
 import com.mycompany.blackjack.model.Game;
 import com.mycompany.blackjack.model.Table;
 import com.mycompany.blackjack.model.Player;
@@ -38,7 +39,7 @@ public class TableController {
 
     @PostConstruct
     public void init() {
-
+        
     }
 
     public void onLoad() {
@@ -46,16 +47,56 @@ public class TableController {
     }
     
     public void joinSeat(Seat seat){
-        if(seat.getPlayer() == null){
-            seat.setPlayer(player);
-        }
+        table.joinSeat(seat.getSeatNumber(), player);
     }
 
     public void leaveSeat(Seat seat) {
         if (seat.getPlayer().equals(player)) {
             table.leaveSeat(seat);
-            table.addGameMessage(player.getUserName() + " has left a seat.");
+            
         }
+    }
+    
+    public boolean thisPlayersGo(){
+        if(table.getCurrentHand()==null){
+            return false;
+        }else if(table.getCurrentHand().getPlayer().equals(player)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    public void doHit(){
+        if(thisPlayersGo()){
+            table.getCurrentHand().setAction(Action.HIT);
+        }
+    }
+    
+    public void doStand(){
+        if(thisPlayersGo()){
+            table.getCurrentHand().setAction(Action.STAND);
+        }
+    }
+    
+    public void doDouble(){
+        if(thisPlayersGo()){
+            table.getCurrentHand().setAction(Action.DOUBLE);
+        }
+    }
+    
+    public void doSplit(){
+        if(thisPlayersGo()){
+            table.getCurrentHand().setAction(Action.SPLIT);
+        }
+    }
+    
+    public boolean canDouble(){
+        return table.getCurrentHand().canDouble();
+    }
+    
+    public boolean canSplit(){
+        return table.getCurrentHand().canSplit();
     }
 
     public void setPlayerName() {
@@ -79,14 +120,6 @@ public class TableController {
         this.userName = userName;
     }
 
-    public boolean playerIsInSeat(Seat seat) {
-        if (player.equals(seat.getPlayer())) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public String getGameMessage() {
         return gameMessage;
     }
@@ -96,7 +129,6 @@ public class TableController {
     }
 
     public void sendGameMessage() {
-        System.out.println("SENDING GAME MESSAGE" + gameMessage);
         table.addGameMessage(gameMessage);
     }
 
@@ -116,5 +148,22 @@ public class TableController {
         this.table = table;
     }
     
+    public boolean isThisPlayerInSeat(Seat seat){
+        if(seat.getPlayer() == null){
+            return false;
+        }else if(seat.getPlayer().equals(player)){
+            return true;
+        }else{
+            return true;
+        }
+    }
+    
+    public boolean canStart(){
+        return table.canStart();
+    }
+    
+    public void start(){
+        
+    }
 
 }

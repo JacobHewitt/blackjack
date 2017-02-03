@@ -129,6 +129,15 @@ public class Hand {
         }
     }
     
+    public boolean canSplit(){
+        if(playerCards.size() == 2){
+            if(playerCards.get(0).getRank().equals(playerCards.get(1).getRank())){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public int getBet(){
         return bet;
     }

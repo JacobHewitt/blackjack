@@ -7,17 +7,10 @@ package com.mycompany.blackjack.model;
 
 import java.util.LinkedList;
 import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.ejb.Startup;
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/**
- *
- * @author jakeh
- */
-@Startup
-@Singleton
+
 public class Table implements Runnable{
 
     private Deck deck;
@@ -26,45 +19,60 @@ public class Table implements Runnable{
 
     private List<String> gameMessages = new LinkedList();
 
-    private static List<Seat> seats;
+    private List<Seat> seats;
     private List<Card> dealerCards = new LinkedList();
 
     private int dealerNumber;
 
     private boolean currentlyPlaying = false;
     
+    private Hand currentHand;
+    
     private int numberOfPlayers;
 
-    @PostConstruct
-    public void init() {
+    
+    public Table() {
+        System.out.println("adding seats INIT TABLE");
         deck=new Deck();
         seats = new LinkedList();
-        for (int x = 0; x < 9; x++) {
-            seats.add(new Seat());
+        for(int x = 0; x < 9; x++){
+            seats.add(new Seat(x));
         }
+        this.run();
     }
     
     @Override
     public void run() {
+        while(true){
+            System.out.println("TABLE RUN INCREMENT");
+            if(numberOfPlayers>0){
+                start();
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Table.class.getName()).log(Level.SEVERE, null, ex);
+            }
         
+        }
     }
 
     private void reset() {
         dealerNumber = 0;
-
         dealerCards.clear();
+        for(Seat seat : seats){
+            seat.getHand().reset();
+        }
     }
 
     public void start() {
+        gameMessages.add("Starting new hand");
         reset();
         currentlyPlaying = true;
         deck.shuffle();
 
         for (Seat seat : seats) {
-            if (seat.getHand() != null) {
-                seat.getHand().reset();
-            }
-            if (seat.getPlayer() != null) {
+            if (seat.getPlayer() != null){
                 seat.getHand().addCard(deck.drawCard());
             }
 
@@ -75,21 +83,29 @@ public class Table implements Runnable{
         }
 
         setDealerNumber();
+        startTurns();
     }
 
-    private void startTurns() throws InterruptedException {
+    private void startTurns(){
         for (Seat seat : seats) {
+            if(seat.getPlayer()==null) continue;
             if (seat.getHand().isBust()) {
                 continue;
             } else if (seat.getHand().isStand()) {
                 continue;
             }
             seat.getHand().setPlayersTurn(true);
+            currentHand = seat.getHand();
             while (seat.getHand().getAction() == null) {
-                Thread.sleep(1500);
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Table.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             doAction(seat.getHand());
         }
+        endOfAction();
     }
 
     private void endOfAction() {
@@ -219,14 +235,19 @@ public class Table implements Runnable{
         this.seats = seats;
     }
 
-    public void joinSeat(Seat seat, Player player) {
+    public void joinSeat(int seatNumber, Player player) {
+        Seat seat = seats.get(seatNumber);
         if (seat.getPlayer() == null) {
             seat.setPlayer(player);
+            gameMessages.add(player.getUserName()+" has joined seat: "+seatNumber);
+            numberOfPlayers++;
         }
     }
 
     public void leaveSeat(Seat seat) {
         seat.setPlayer(null);
+        gameMessages.add("player has left seat: "+seat.getSeatNumber());
+        numberOfPlayers--;
     }
 
     public void addGameMessage(String message) {
@@ -244,6 +265,21 @@ public class Table implements Runnable{
 
     public int getNumberOfPlayers() {
         return numberOfPlayers;
+    }
+
+    public Hand getCurrentHand() {
+        return currentHand;
+    }
+
+    public void setCurrentHand(Hand currentHand) {
+        this.currentHand = currentHand;
+    }
+
+    public boolean canStart(){
+        if(currentlyPlaying==false){
+            return true;
+        }
+        return false;
     }
 
     

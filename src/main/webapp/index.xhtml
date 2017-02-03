@@ -18,6 +18,7 @@
                 <tr>
                     <td><h:outputText value="#{table.tableName}" /></td>
                     <td><h:outputText value="#{table.getNumberOfPlayers()}" /></td>
+                    <td><input type="button" onclick="clickedTable('#{table.tableName}');" value="View Table" /></td>
                 </tr>
             </ui:repeat>
 

@@ -12,28 +12,27 @@
     </h:head>
 
     <h:body>
-        
+
         <f:metadata>
             <f:viewParam name="tableName" value="#{tableController.tableName}" />
             <f:viewAction action="#{tableController.onLoad}" />
         </f:metadata>
-        
-        
+
+
         <h:form id="nameForm" >
             <h2>Welcome: <h:outputText value="#{tableController.player.userName}" /></h2>
             <h:inputText id="username" value="#{tableController.player.userName}" />
-            <h:commandButton value="Set Username" >
-                <f:ajax execute="username" render="@form" />
-            </h:commandButton>
+            <b:commandButton value="Change UserName" actionListener="#{tableController.setPlayerName()}" ajax="true" update="@form"/>
 
 
         </h:form>
 
         <h:form id="game" >
-            <b:poll interval="3000"
+            <h:outputText value="#{tableController.table.seats.size()}" />
+            <b:poll interval="15000"
                     update="@form" />
-            
-            
+
+
             <div id="dealerCards" >
                 <table>
                     <tr>
@@ -49,25 +48,31 @@
             <table>
                 <tr>
                     <ui:repeat value="#{tableController.table.seats}" var="seat">
-                        <td style="background-color: green; width: 100px; height:100px;">
+                        <td style="background-color: green; width:10%; height:100px;">
                             <table>
                                 <tr>
-                                    <h:panelGroup rendered="#{seat.player==null}">
+                                    <td>Seat: <h:outputText value="#{seat.seatNumber}" /></td>
+                                </tr>
+                                <tr>
+                                    <h:panelGroup rendered="#{!seat.isEmpty()}">
+                                        <h4><h:outputText value="#{seat.player.userName}" /></h4>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{seat.isEmpty()}">
                                         <td>
-                                            <h:commandButton value="Join Seat">
-                                                <f:ajax execute="#{tableController.joinSeat(seat)}" render="@form" />
-                                            </h:commandButton>
+                                            <b:commandButton value="Join Seat" actionListener="#{tableController.joinSeat(seat)}" ajax="true" update="game gameMessages"/>
+                                        </td>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{tableController.isThisPlayerInSeat(seat)}" >
+                                        <td>
+                                            <b:commandButton value="Leave Seat" actionListener="#{tableController.leaveSeat(seat)}" ajax="true" update="game gameMessages"/>
+                                            <h:panelGroup rendered="#{!tableController.table.currentlyPlaying}">
+                                                
+                                            </h:panelGroup>
                                         </td>
                                     </h:panelGroup>
                                     <ui:repeat value="#{seat.hand.playerCards}" var="card">
                                         <td><h:outputText value="#{card}" /></td>
                                     </ui:repeat>
-                                    <h:panelGroup rendered="#{tableController.playerIsInSeat(seat)}">
-                                        <h:commandButton value="Leave Seat" >
-                                            <f:ajax execute="#{tableController.leaveSeat(seat)}" render="@form"/>
-                                        </h:commandButton>
-                                    </h:panelGroup>
-
                                 </tr>
                             </table>
                         </td>
@@ -78,8 +83,31 @@
 
                 </tr>
             </table>
-            <h:outputText value="#{tableController.table.seats.size()}" />
+
+            <b:commandButton value="Start" rendered="#{tableController.canStart()}" actionListener="#{tableController.start()}" ajax="true" update="game"/>
+
+            <h:panelGroup rendered="#{tableController.thisPlayersGo()}" >
+
+                <h:commandButton value="Hit" >
+                    <f:ajax execute="#{tableController.doHit()}" />
+                </h:commandButton>
+                <h:commandButton value="Stand">
+                    <f:ajax execute="#{tableController.doStand()}" />
+                </h:commandButton>
+                <h:panelGroup rendered="#{tableController.canDouble()}" >
+                    <h:commandButton value="Double" >
+                        <f:ajax execute="#{tableController.doDouble()}" />
+
+                    </h:commandButton>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{tableController.canSplit()}" >
+                    <h:commandButton value="Split" >
+                        <f:ajax execute="#{tableController.doSplit()}" />
+                    </h:commandButton>
+                </h:panelGroup>
+            </h:panelGroup>
         </h:form>
+
 
 
         <h:form id="gameMessages" >

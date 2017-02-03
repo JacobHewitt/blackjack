@@ -1,0 +1,4 @@
+<jboss-web>
+    <context-root>/blackjack</context-root>
+<!--    <security-domain>refereeSecurityDomain</security-domain>-->
+</jboss-web>

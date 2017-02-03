@@ -14,6 +14,14 @@ public class Seat {
     private Player player;
     
     private Hand hand;
+    
+    private int bet;
+    
+    private int seatNumber;
+    
+    public Seat(int seatNumber){
+        this.seatNumber=seatNumber;
+    }
 
     public Player getPlayer() {
         return player;
@@ -29,6 +37,26 @@ public class Seat {
 
     public void setHand(Hand hand) {
         this.hand = hand;
+    }
+
+    public int getBet() {
+        return bet;
+    }
+
+    public void setBet(int bet) {
+        this.bet = bet;
+    }
+    
+    public boolean isEmpty(){
+        return player==null;
+    }
+
+    public int getSeatNumber() {
+        return seatNumber;
+    }
+
+    public void setSeatNumber(int seatNumber) {
+        this.seatNumber = seatNumber;
     }
     
     

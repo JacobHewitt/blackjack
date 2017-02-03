@@ -17,6 +17,11 @@ public class Player {
     
     private String userName;
     private List<Hand> playerHands = new LinkedList<Hand>();
+    
+    public Player(){
+        userName = "default";
+        playerHands = new LinkedList<>();
+    }
 
     public List<Hand> getPlayerHands() {
         return playerHands;
