@@ -7,6 +7,7 @@ package com.mycompany.blackjack.controller;
 
 import com.mycompany.blackjack.model.Action;
 import com.mycompany.blackjack.model.Game;
+import com.mycompany.blackjack.model.Hand;
 import com.mycompany.blackjack.model.Table;
 import com.mycompany.blackjack.model.Player;
 import com.mycompany.blackjack.model.Seat;
@@ -65,6 +66,11 @@ public class TableController {
         }else{
             return false;
         }
+    }
+    
+    public boolean thisIsTheCurrentHand(Hand hand){
+        if(table.getCurrentHand()==null)return false;
+        return table.getCurrentHand().equals(hand);
     }
     
     public void doHit(){
@@ -129,7 +135,7 @@ public class TableController {
     }
 
     public void sendGameMessage() {
-        table.addGameMessage(gameMessage);
+        table.addGameMessage(player.getUserName(), gameMessage);
     }
 
     public String getTableName() {

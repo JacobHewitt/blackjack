@@ -10,5 +10,5 @@ package com.mycompany.blackjack.model;
  * @author jakeh
  */
 public enum Suit {
-    HEART, DIAMOND, SPADE, CLUB
+    HEARTS, DIAMONDS, SPADES, CLUBS
 }

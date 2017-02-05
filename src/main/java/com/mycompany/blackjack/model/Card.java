@@ -24,7 +24,7 @@ public class Card {
     
     @Override
     public String toString(){
-        return suit+" "+rank;
+        return suit+""+rank+".png";
     }
 
     public Suit getSuit() {
@@ -42,25 +42,25 @@ public class Card {
     private int getValueFirstTime(){
         int toReturn = 0;
         switch(rank){
-            case ONE: toReturn = 1;
+            case CARD_1: toReturn = 1;
                 break;
-            case TWO: toReturn = 2;
+            case CARD_2: toReturn = 2;
                 break;
-            case THREE: toReturn = 3;
+            case CARD_3: toReturn = 3;
                 break;
-            case FOUR: toReturn = 4;
+            case CARD_4: toReturn = 4;
                 break;
-            case FIVE: toReturn = 5;
+            case CARD_5: toReturn = 5;
                 break;
-            case SIX: toReturn = 6;
+            case CARD_6: toReturn = 6;
                 break;
-            case SEVEN: toReturn = 7;
+            case CARD_7: toReturn = 7;
                 break;
-            case EIGHT: toReturn = 8;
+            case CARD_8: toReturn = 8;
                 break;
-            case NINE: toReturn = 9;
+            case CARD_9: toReturn = 9;
                 break;
-            case TEN: toReturn = 10;
+            case CARD_10: toReturn = 10;
                 break;
             case JACK: toReturn = 10;
                 break;

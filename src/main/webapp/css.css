@@ -1,0 +1,15 @@
+.cardImages{
+    width: 100%;
+}
+
+.dealerCards{
+    width:20%;
+    
+}
+
+.playerCards{
+    display:block;
+    height: 100px;
+    overflow: hidden;
+    
+}

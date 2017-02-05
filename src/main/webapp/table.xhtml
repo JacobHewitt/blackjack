@@ -18,9 +18,12 @@
             <f:viewAction action="#{tableController.onLoad}" />
         </f:metadata>
 
+        <b:poll interval="500" update="game gameMessages nameForm" />
+
 
         <h:form id="nameForm" >
             <h2>Welcome: <h:outputText value="#{tableController.player.userName}" /></h2>
+            <h4>Chips: <h:outputText value="#{player.chips}" /></h4>
             <h:inputText id="username" value="#{tableController.player.userName}" />
             <b:commandButton value="Change UserName" actionListener="#{tableController.setPlayerName()}" ajax="true" update="@form"/>
 
@@ -28,17 +31,13 @@
         </h:form>
 
         <h:form id="game" >
-            <h:outputText value="#{tableController.table.seats.size()}" />
-            <b:poll interval="15000"
-                    update="@form" />
-
-
+            <h:outputText value="#{tableController.table.timer}" />
             <div id="dealerCards" >
                 <table>
                     <tr>
 
                         <ui:repeat value="#{tableController.table.dealerCards}" var="card">
-                            <td>#{card}</td>
+                            <td> <h:graphicImage url="http://localhost:8080/blackjack/cardImgs/#{card.toString()}" class="dealerCards" /></td>
                         </ui:repeat>
                     </tr>
                 </table>
@@ -55,7 +54,7 @@
                                 </tr>
                                 <tr>
                                     <h:panelGroup rendered="#{!seat.isEmpty()}">
-                                        <h4><h:outputText value="#{seat.player.userName}" /></h4>
+                                        <td><h4><h:outputText value="#{seat.player.userName}" /></h4></td>
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{seat.isEmpty()}">
                                         <td>
@@ -63,47 +62,57 @@
                                         </td>
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{tableController.isThisPlayerInSeat(seat)}" >
-                                        <td>
-                                            <b:commandButton value="Leave Seat" actionListener="#{tableController.leaveSeat(seat)}" ajax="true" update="game gameMessages"/>
-                                            <h:panelGroup rendered="#{!tableController.table.currentlyPlaying}">
-                                                
-                                            </h:panelGroup>
-                                        </td>
+                                        <tr>
+                                            <td>
+                                                <b:commandButton value="Leave Seat" actionListener="#{tableController.leaveSeat(seat)}" ajax="true" update="game gameMessages"/>
+                                                <h:panelGroup rendered="#{!tableController.table.currentlyPlaying}">
+
+                                                </h:panelGroup>
+                                            </td>
+                                        </tr>
                                     </h:panelGroup>
-                                    <ui:repeat value="#{seat.hand.playerCards}" var="card">
-                                        <td><h:outputText value="#{card}" /></td>
-                                    </ui:repeat>
+                                    <td>
+
+                                        <table >
+                                            <ui:repeat value="#{seat.hands}" var="hand">
+                                                <h:panelGroup rendered="#{tableController.thisIsTheCurrentHand(hand)}" style="background-color:red;">
+                                                    <h:outputText value="Time Left: #{tableController.table.timer} / 10" />
+                                                </h:panelGroup>
+                                                <ui:repeat value="#{hand.getPlayerCards()}" var="card">
+                                                    <tr>
+                                                        <td class="playerCards" >
+                                                            <h:graphicImage url="http://localhost:8080/blackjack/cardImgs/#{card.toString()}" class="cardImages"/>
+                                                        </td>
+                                                    </tr>
+                                                </ui:repeat>
+                                                <tr>
+                                                    <h:panelGroup rendered="#{hand!=null}">
+                                                        <td><h2>Player Cards Value: <h:outputText value="#{hand.playerNumber}" /></h2> </td>
+
+                                                    </h:panelGroup>
+                                                </tr>
+                                            </ui:repeat>
+                                        </table>
+
+                                    </td>
+
                                 </tr>
                             </table>
                         </td>
                     </ui:repeat>
-                    <h:panelGroup rendered="#{seat.hand!=null}">
-                        <h2>Player Cards Value: <h:outputText value="#{hand.playerNumber}" /></h2>
-                    </h:panelGroup>
+
 
                 </tr>
             </table>
 
-            <b:commandButton value="Start" rendered="#{tableController.canStart()}" actionListener="#{tableController.start()}" ajax="true" update="game"/>
-
             <h:panelGroup rendered="#{tableController.thisPlayersGo()}" >
-
-                <h:commandButton value="Hit" >
-                    <f:ajax execute="#{tableController.doHit()}" />
-                </h:commandButton>
-                <h:commandButton value="Stand">
-                    <f:ajax execute="#{tableController.doStand()}" />
-                </h:commandButton>
+                <b:commandButton value="Hit" actionListener="#{tableController.doHit()}" ajax="true" update="game" />
+                <b:commandButton value="Stand" actionListener="#{tableController.doStand()}" ajax="true" update="game" />
                 <h:panelGroup rendered="#{tableController.canDouble()}" >
-                    <h:commandButton value="Double" >
-                        <f:ajax execute="#{tableController.doDouble()}" />
-
-                    </h:commandButton>
+                    <b:commandButton value="Double" actionListener="#{tableController.doDouble()}" ajax="true" update="game" />
                 </h:panelGroup>
                 <h:panelGroup rendered="#{tableController.canSplit()}" >
-                    <h:commandButton value="Split" >
-                        <f:ajax execute="#{tableController.doSplit()}" />
-                    </h:commandButton>
+                    <b:commandButton value="Split" actionListener="#{tableController.doSplit()}" ajax="true" update="game"/>
                 </h:panelGroup>
             </h:panelGroup>
         </h:form>
@@ -112,31 +121,29 @@
 
         <h:form id="gameMessages" >
 
-            <table>
+            <div style="height: 300px; overflow: scroll;" >
 
-                <ui:repeat value="#{tableController.table.gameMessages}" var="message">
-                    <tr>
-                        <td>
-                            <h:outputText value="#{message}" />
-                        </td>
-                    </tr>
-                </ui:repeat>
-                <tr>
-                    <td>
-                        <h:inputText value="#{tableController.gameMessage}" />            
-                    </td>
-
-                    <td>
-                        <h:commandButton id="sendMessage" value="Send Message" action="#{tableController.sendGameMessage()}" >
-                            <f:ajax execute="@form" render="@form" />
-
-                        </h:commandButton>            
-
-                    </td>
-                </tr>
-            </table>
-
-
+                <h:dataTable value="#{tableController.table.gameMessages}" var="message" >
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Time" />
+                        </f:facet>
+                        <h:outputText value="#{message.time.toString()}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Author" />
+                        </f:facet>
+                        <h:outputText value="#{message.author}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Message" />
+                        </f:facet>
+                        <h:outputText value="#{message.message}"/>
+                    </h:column>
+                </h:dataTable>
+            </div>
         </h:form>
 
 

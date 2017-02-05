@@ -16,19 +16,12 @@ import javax.faces.bean.SessionScoped;
 public class Player {
     
     private String userName;
-    private List<Hand> playerHands = new LinkedList<Hand>();
+    
+    private int chips;
     
     public Player(){
         userName = "default";
-        playerHands = new LinkedList<>();
-    }
-
-    public List<Hand> getPlayerHands() {
-        return playerHands;
-    }
-
-    public void setPlayerHands(List<Hand> playerHands) {
-        this.playerHands = playerHands;
+        chips = 1000;
     }
 
     public String getUserName() {
@@ -38,8 +31,23 @@ public class Player {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
+    public int getChips() {
+        return chips;
+    }
+
+    public void setChips(int chips) {
+        this.chips = chips;
+    }
     
+    public void addChips(int chips){
+        this.chips+=chips;
+    }
     
+    public int takeChips(int amount){
+        chips -= amount;
+        return amount;
+    }
     
     
     

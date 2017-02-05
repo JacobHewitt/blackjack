@@ -5,6 +5,9 @@
  */
 package com.mycompany.blackjack.model;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  *
  * @author jakeh
@@ -13,7 +16,7 @@ public class Seat {
     
     private Player player;
     
-    private Hand hand;
+    private List<Hand> hands;
     
     private int bet;
     
@@ -21,6 +24,7 @@ public class Seat {
     
     public Seat(int seatNumber){
         this.seatNumber=seatNumber;
+        
     }
 
     public Player getPlayer() {
@@ -31,12 +35,12 @@ public class Seat {
         this.player = player;
     }
 
-    public Hand getHand() {
-        return hand;
+    public List<Hand> getHands() {
+        return hands;
     }
 
-    public void setHand(Hand hand) {
-        this.hand = hand;
+    public void setHands(List<Hand> hand) {
+        this.hands = hand;
     }
 
     public int getBet() {
@@ -59,7 +63,13 @@ public class Seat {
         this.seatNumber = seatNumber;
     }
     
+    public void resetHands(){
+        hands = new LinkedList<Hand>();
+    }
     
+    public void addHand(Hand hand){
+        this.hands.add(hand);
+    }
     
     
 }

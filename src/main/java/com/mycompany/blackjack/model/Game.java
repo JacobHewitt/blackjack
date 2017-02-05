@@ -26,9 +26,7 @@ public class Game {
     public void init(){
         tables = new LinkedList<Table>();
         players = new LinkedList<Player>();
-        Table firstTable = new Table();
-        firstTable.setTableName("firstTable");
-        tables.add(firstTable);
+        createTable("firstTable");
     }
     
     public List<Table> getTables(){
@@ -43,6 +41,16 @@ public class Game {
         }
         return null;
     }
+    
+    public void createTable(String tableName){
+        Table firstTable = new Table();
+        firstTable.setTableName(tableName);
+        tables.add(firstTable);
+        Thread tablesThread = new Thread(firstTable);
+        tablesThread.start();
+    }
+    
+    
     
     
     
