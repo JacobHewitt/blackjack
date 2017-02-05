@@ -10,14 +10,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-public class Table implements Runnable{
+public class Table implements Runnable {
 
     private Deck deck;
 
     private String tableName;
 
-    private List<String> gameMessages = new LinkedList();
+    private List<GameMessage> gameMessages = new LinkedList();
 
     private List<Seat> seats;
     private List<Card> dealerCards = new LinkedList();
@@ -25,116 +24,158 @@ public class Table implements Runnable{
     private int dealerNumber;
 
     private boolean currentlyPlaying = false;
-    
+
     private Hand currentHand;
-    
+
     private int numberOfPlayers;
 
-    
+    private int timer;
+
     public Table() {
         System.out.println("adding seats INIT TABLE");
-        deck=new Deck();
+        deck = new Deck();
         seats = new LinkedList();
-        for(int x = 0; x < 9; x++){
+        for (int x = 0; x < 9; x++) {
             seats.add(new Seat(x));
         }
-        this.run();
+
     }
-    
+
     @Override
     public void run() {
-        while(true){
-            System.out.println("TABLE RUN INCREMENT");
-            if(numberOfPlayers>0){
-                start();
+        waitForPlayers();
+    }
+    
+    private void waitForPlayers(){
+        while (true) {
+            timer = 0;
+            while(timer < 10){
+                
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Table.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                timer++;
             }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Table.class.getName()).log(Level.SEVERE, null, ex);
+            if (numberOfPlayers > 0) {
+                System.out.println("STARTING GAME");
+                
+                startGame();
             }
-        
         }
     }
 
     private void reset() {
+        timer = 0;
         dealerNumber = 0;
         dealerCards.clear();
-        for(Seat seat : seats){
-            seat.getHand().reset();
+        currentHand=null;
+        for (Seat seat : seats) {
+            seat.resetHands();
         }
     }
 
-    public void start() {
-        gameMessages.add("Starting new hand");
+    public void startGame() {
+        addGameMessage("Game", "STARTING NEW HAND");
         reset();
         currentlyPlaying = true;
         deck.shuffle();
 
         for (Seat seat : seats) {
-            if (seat.getPlayer() != null){
-                seat.getHand().addCard(deck.drawCard());
+            if (seat.getPlayer() != null) {
+                Hand toAdd = new Hand(seat.getPlayer());
+                toAdd.addCard(deck.drawCard());
+                seat.addHand(toAdd);
             }
 
         }
         dealerCards.add(deck.drawCard());
         for (Seat seat : seats) {
-            seat.getHand().addCard(deck.drawCard());
+            if (seat.getPlayer() != null) {
+                seat.getHands().get(0).addCard(deck.drawCard());
+            }
+
         }
 
         setDealerNumber();
         startTurns();
     }
 
-    private void startTurns(){
+    private void startTurns() {
         for (Seat seat : seats) {
-            if(seat.getPlayer()==null) continue;
-            if (seat.getHand().isBust()) {
-                continue;
-            } else if (seat.getHand().isStand()) {
+            if (seat.getPlayer() == null) {
                 continue;
             }
-            seat.getHand().setPlayersTurn(true);
-            currentHand = seat.getHand();
-            while (seat.getHand().getAction() == null) {
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Table.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            doAction(seat.getHand());
+
+            seatsTurn(seat);
+
         }
         endOfAction();
     }
 
-    private void endOfAction() {
-        for (Seat seat : seats) {
-            if (seat.getHand().isBust()) {
+    private void seatsTurn(Seat seat) {
+        List<Hand> hands = seat.getHands();
+        addGameMessage("Game", seat.getPlayer().getUserName()+" it is your turn. You have 10 seconds to act.");
+        for (Hand hand : hands) {
+            timer = 0;
+            if (hand.isBust()) {
+                continue;
+            } else if (hand.isStand()) {
                 continue;
             }
-
-            while (dealerNumber < 16 && dealerNumber < 21) {
-                dealerCards.add(deck.drawCard());
-                setDealerNumber();
-            }
-            if (dealerNumber < 21) {
-                if (seat.getHand().getPlayerNumber() > dealerNumber) {
-                    seat.getHand().addChips(seat.getHand().getBet() * 2);
-                    gameMessages.add("You have won: " + seat.getHand().getPlayer().getUserName());
-                } else if (seat.getHand().getPlayerNumber() < dealerNumber) {
-                    gameMessages.add("You have Lost." + seat.getHand().getPlayer().getUserName());
-                } else {
-                    gameMessages.add("It's a tie." + seat.getHand().getPlayer().getUserName());
+            hand.setPlayersTurn(true);
+            currentHand = hand;
+            while (hand.getAction() == null && timer <= 10) {
+                try {
+                    System.out.println("WAITING PLAYERS TURN");
+                    Thread.sleep(500);
+                    timer++;
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Table.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } else {
-                seat.getHand().addChips(seat.getHand().getBet() * 2);
-                gameMessages.add("You have won: " + seat.getHand().getPlayer().getUserName());
             }
+            doAction(hand);
+            currentHand = null;
         }
+
+    }
+
+    private void endOfAction() {
+        while (dealerNumber < 16 && dealerNumber < 21) {
+            dealerCards.add(deck.drawCard());
+            setDealerNumber();
+        }
+
+        for (Seat seat : seats) {
+            for (Hand hand : seat.getHands()) {
+                if (hand.isBust()) {
+                    continue;
+                }
+
+                if (dealerNumber < 21) {
+                    if (hand.getPlayerNumber() > dealerNumber) {
+                        seat.getPlayer().addChips(hand.getBet() * 2);
+                        addGameMessage("Game", "You have won: " + hand.getPlayer().getUserName());
+                    } else if (hand.getPlayerNumber() < dealerNumber) {
+                        addGameMessage("Game", "You have Lost." + hand.getPlayer().getUserName());
+                    } else {
+                        addGameMessage("Game", "It's a tie." + hand.getPlayer().getUserName());
+                    }
+                } else {
+                    seat.getPlayer().addChips(hand.getBet() * 2);
+                    addGameMessage("Game", "You have won: " + hand.getPlayer().getUserName());
+                }
+            }
+
+        }
+        currentlyPlaying = false;
     }
 
     private void doAction(Hand hand) {
+        if (hand.getAction() == null) {
+            hand.setAction(Action.STAND);
+        }
         switch (hand.getAction()) {
             case STAND:
                 actionStand(hand);
@@ -149,13 +190,14 @@ public class Table implements Runnable{
                 actionDouble(hand);
                 break;
         }
+        addGameMessage("Game", hand.getPlayer().getUserName()+" has "+hand.getAction());
     }
 
     private void actionHit(Hand hand) {
         hand.addCard(deck.drawCard());
 
         if (hand.getPlayerNumber() > 21) {
-            gameMessages.add(hand.getPlayer().getUserName() + "You have Bust.");
+            addGameMessage("Game", hand.getPlayer().getUserName() + "You have Bust.");
         }
     }
 
@@ -207,7 +249,7 @@ public class Table implements Runnable{
         this.dealerCards = dealerCards;
     }
 
-    public List<String> getGameMessages() {
+    public List<GameMessage> getGameMessages() {
         return gameMessages;
     }
 
@@ -239,20 +281,19 @@ public class Table implements Runnable{
         Seat seat = seats.get(seatNumber);
         if (seat.getPlayer() == null) {
             seat.setPlayer(player);
-            gameMessages.add(player.getUserName()+" has joined seat: "+seatNumber);
+            addGameMessage("Game", player.getUserName() + " has joined seat: " + seatNumber);
             numberOfPlayers++;
         }
     }
 
     public void leaveSeat(Seat seat) {
+        addGameMessage("Game", seat.getPlayer().getUserName()+" has left seat: "+seat.getSeatNumber());
         seat.setPlayer(null);
-        gameMessages.add("player has left seat: "+seat.getSeatNumber());
         numberOfPlayers--;
     }
 
-    public void addGameMessage(String message) {
-        System.out.println("adding game message" + message);
-        gameMessages.add(message);
+    public void addGameMessage(String author, String comment) {
+        gameMessages.add(new GameMessage(author, comment));
     }
 
     public String getTableName() {
@@ -275,13 +316,21 @@ public class Table implements Runnable{
         this.currentHand = currentHand;
     }
 
-    public boolean canStart(){
-        if(currentlyPlaying==false){
+    public boolean canStart() {
+        if (currentlyPlaying == false) {
             return true;
         }
         return false;
     }
 
+    public int getTimer() {
+        return timer;
+    }
+
+    public void setTimer(int timer) {
+        this.timer = timer;
+    }
+    
     
 
 }
