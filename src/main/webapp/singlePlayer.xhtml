@@ -9,70 +9,70 @@
     <ui:define name="content">
 
         <b:container>
-            <h1>Single Player BlackJack</h1>
+            <h1>Single Player </h1>
 
 
             <h:form id="game" >
+                <p>Welcome: <h:outputText value="#{sessionBean.player.firstName}" /></p>
+                <p>Balance: <h:outputText value="#{sessionBean.player.chips}" /></p> 
 
-                <div id="dealerCards" >
-                    <table>
+                <div id="dealerCardsDiv" >
+                    <table >
                         <tr>
-
                             <ui:repeat value="#{singlePlayerController.dealerCards}" var="card">
-                                <td> <h:graphicImage url="http://localhost:8080/blackjack/cardImgs/#{card.toString()}" class="dealerCards" /></td>
+                                <td> <h:graphicImage url="http://localhost:8080/blackjack/cardImgs/#{card.toString()}" class="dealerCards"/></td>
                             </ui:repeat>
                         </tr>
                     </table>
                     <h2>Dealer Cards Value: <h:outputText value="#{singlePlayerController.dealerCardsValue}" /></h2>
                 </div>
 
-                <h:panelGroup rendered="#{singlePlayerController.currentlyPlaying}">
-                    <table >
-                        <ui:repeat value="#{singlePlayerController.playerHands}" var="hand">
-                            <tr>
-                                <ui:repeat value="#{hand.getPlayerCards()}" var="card">
+                <h:panelGroup rendered="#{singlePlayerController.playerHasCards()}">
+                    <div id="playerCardsDiv">
+                        <table id="playerCardsTable">
+                            <ui:repeat value="#{singlePlayerController.playerHands}" var="hand">
+                                <tr>
+                                
+                                    <ui:repeat value="#{hand.getPlayerCards()}" var="card">
 
-                                    <td class="playerCards" >
-                                        <h:graphicImage url="http://localhost:8080/blackjack/cardImgs/#{card.toString()}" class="cardImagesSinglePlayer"/>
-                                    </td>
+                                        <td>
+                                            <h:graphicImage url="http://localhost:8080/blackjack/cardImgs/#{card.toString()}" class="cardImagesSinglePlayer"/>
+                                        </td>
 
-                                </ui:repeat>
-
-
-                                <td><h2>Player Cards Value: <h:outputText value="#{hand.playerNumber}" /></h2> </td>
-
-                                <h:panelGroup rendered="#{singlePlayerController.thisHandsTurn(hand)}" >
-                                    <td><p style="background-color:red;">Please Act</p></td>
-                                </h:panelGroup>
-
-                            </tr>
-                        </ui:repeat>
+                                    </ui:repeat>
 
 
-                    </table>
+                                    <td><h2>Player Cards Value: <h:outputText value="#{hand.playerNumber}" /></h2> </td>
 
+                                    <h:panelGroup rendered="#{singlePlayerController.thisHandsTurn(hand)}" >
+                                        <td><p style="background-color:red;">Please Act</p></td>
+                                    </h:panelGroup>
+
+                                </tr>
+                            </ui:repeat>
+
+
+                        </table>
+                    </div>
+                    
                 </h:panelGroup>
 
                 <h:panelGroup rendered="#{!singlePlayerController.isCurrentlyPlaying()}">
-                    <b:commandButton value="Deal" actionListener="#{singlePlayerController.start()}" ajax="true" update="game gameMessages" />
+                    <h:inputText value="#{singlePlayerController.betAmount}" />
+                    <b:commandButton value="Deal" actionListener="#{singlePlayerController.start()}" ajax="true" update="game menu" />
                 </h:panelGroup>
 
 
                 <h:panelGroup rendered="#{singlePlayerController.isCurrentlyPlaying()}" >
-                    <b:commandButton value="Hit" actionListener="#{singlePlayerController.doHit()}" ajax="true" update="game" />
-                    <b:commandButton value="Stand" actionListener="#{singlePlayerController.doStand()}" ajax="true" update="game" />
+                    <b:commandButton value="Hit" actionListener="#{singlePlayerController.doHit()}" ajax="true" update="game menu" />
+                    <b:commandButton value="Stand" actionListener="#{singlePlayerController.doStand()}" ajax="true" update="game menu" />
                     <h:panelGroup rendered="#{singlePlayerController.canDouble()}" >
-                        <b:commandButton value="Double" actionListener="#{singlePlayerController.doDouble()}" ajax="true" update="game" />
+                        <b:commandButton value="Double" actionListener="#{singlePlayerController.doDouble()}" ajax="true" update="game menu" />
                     </h:panelGroup>
                     <h:panelGroup rendered="#{singlePlayerController.canSplit()}" >
-                        <b:commandButton value="Split" actionListener="#{singlePlayerController.doSplit()}" ajax="true" update="game"/>
+                        <b:commandButton value="Split" actionListener="#{singlePlayerController.doSplit()}" ajax="true" update="game menu"/>
                     </h:panelGroup>
                 </h:panelGroup>
-            </h:form>
-
-
-
-            <h:form id="gameMessages" >
 
                 <div style="height: 300px; overflow: scroll;" >
 
@@ -96,11 +96,14 @@
                             <h:outputText value="#{message.message}"/>
                         </h:column>
                     </h:dataTable>
+                    <h:inputText value="#{singlePlayerController.message}" />
+                    <b:commandButton value="Send" actionListener="#{singlePlayerController.sendMessage()}" ajax="true" update="game" />
                 </div>
+
+
+
+
             </h:form>
-
-
-
 
         </b:container>
 

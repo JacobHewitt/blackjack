@@ -84,7 +84,7 @@ public class Table implements Runnable {
 
         for (Seat seat : seats) {
             if (seat.getPlayer() != null) {
-                Hand toAdd = new Hand(seat.getPlayer());
+                Hand toAdd = new Hand(seat.getPlayer(), seat.getBet());
                 toAdd.addCard(deck.drawCard());
                 seat.addHand(toAdd);
             }
@@ -116,7 +116,7 @@ public class Table implements Runnable {
 
     private void seatsTurn(Seat seat) {
         List<Hand> hands = seat.getHands();
-        addGameMessage("Game", seat.getPlayer().getUserName()+" it is your turn. You have 10 seconds to act.");
+        addGameMessage("Game", seat.getPlayer().getFirstName()+" it is your turn. You have 10 seconds to act.");
         for (Hand hand : hands) {
             timer = 0;
             if (hand.isBust()) {
@@ -156,15 +156,15 @@ public class Table implements Runnable {
                 if (dealerNumber < 21) {
                     if (hand.getPlayerNumber() > dealerNumber) {
                         seat.getPlayer().addChips(hand.getBet() * 2);
-                        addGameMessage("Game", "You have won: " + hand.getPlayer().getUserName());
+                        addGameMessage("Game", "You have won: " + hand.getPlayer().getFirstName());
                     } else if (hand.getPlayerNumber() < dealerNumber) {
-                        addGameMessage("Game", "You have Lost." + hand.getPlayer().getUserName());
+                        addGameMessage("Game", "You have Lost." + hand.getPlayer().getFirstName());
                     } else {
-                        addGameMessage("Game", "It's a tie." + hand.getPlayer().getUserName());
+                        addGameMessage("Game", "It's a tie." + hand.getPlayer().getFirstName());
                     }
                 } else {
                     seat.getPlayer().addChips(hand.getBet() * 2);
-                    addGameMessage("Game", "You have won: " + hand.getPlayer().getUserName());
+                    addGameMessage("Game", "You have won: " + hand.getPlayer().getFirstName());
                 }
             }
 
@@ -190,14 +190,14 @@ public class Table implements Runnable {
                 actionDouble(hand);
                 break;
         }
-        addGameMessage("Game", hand.getPlayer().getUserName()+" has "+hand.getAction());
+        addGameMessage("Game", hand.getPlayer().getFirstName()+" has "+hand.getAction());
     }
 
     private void actionHit(Hand hand) {
         hand.addCard(deck.drawCard());
 
         if (hand.getPlayerNumber() > 21) {
-            addGameMessage("Game", hand.getPlayer().getUserName() + "You have Bust.");
+            addGameMessage("Game", hand.getPlayer().getFirstName() + "You have Bust.");
         }
     }
 
@@ -281,13 +281,13 @@ public class Table implements Runnable {
         Seat seat = seats.get(seatNumber);
         if (seat.getPlayer() == null) {
             seat.setPlayer(player);
-            addGameMessage("Game", player.getUserName() + " has joined seat: " + seatNumber);
+            addGameMessage("Game", player.getFirstName() + " has joined seat: " + seatNumber);
             numberOfPlayers++;
         }
     }
 
     public void leaveSeat(Seat seat) {
-        addGameMessage("Game", seat.getPlayer().getUserName()+" has left seat: "+seat.getSeatNumber());
+        addGameMessage("Game", seat.getPlayer().getFirstName()+" has left seat: "+seat.getSeatNumber());
         seat.setPlayer(null);
         numberOfPlayers--;
     }

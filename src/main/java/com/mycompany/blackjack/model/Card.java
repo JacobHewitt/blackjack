@@ -42,8 +42,6 @@ public class Card {
     private int getValueFirstTime(){
         int toReturn = 0;
         switch(rank){
-            case CARD_1: toReturn = 1;
-                break;
             case CARD_2: toReturn = 2;
                 break;
             case CARD_3: toReturn = 3;

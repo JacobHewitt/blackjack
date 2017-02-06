@@ -1,10 +1,52 @@
+#game{
+    background-color: green;
+    
+}
+
 .cardImages{
     width: 100%;
 }
 
-.dealerCards{
-    width:20%;
+.dealerCardsDiv{
+    background-color:yellow;
+    width:100%;
+    height: 20%;
     
+}
+
+.playerCardsDiv{
+    background-color: blue;
+    width: 100%;
+    height: 30%;
+    
+}
+
+#playerCardsTable{
+    background-color: grey;
+    width: 100%;
+    height: 100%;
+    
+    
+    
+}
+
+#playerCardsTable tr{
+    
+}
+
+#playerCardsTable td{
+    white-space: nowrap;
+
+    
+}
+
+.cardImagesSinglePlayer{
+    height: 100px;
+    
+}
+
+.dealerCards{
+    height: 100px;
 }
 
 .playerCards{
@@ -14,7 +56,7 @@
     
 }
 
-.cardImagesSinglePlayer{
-    width: 10%;
+.currentHand{
+    background-color:red;
     
 }

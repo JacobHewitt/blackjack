@@ -32,6 +32,8 @@ public class TableController {
     private Table table;
 
     @Inject
+    private SessionBean playerSession;
+    
     private Player player;
 
     private String userName;
@@ -40,7 +42,7 @@ public class TableController {
 
     @PostConstruct
     public void init() {
-        
+        player = playerSession.getPlayer();
     }
 
     public void onLoad() {
@@ -107,7 +109,7 @@ public class TableController {
 
     public void setPlayerName() {
         System.out.println("setting username" + userName);
-        player.setUserName(userName);
+        player.setFirstName(userName);
     }
 
     public Player getPlayer() {
@@ -135,7 +137,7 @@ public class TableController {
     }
 
     public void sendGameMessage() {
-        table.addGameMessage(player.getUserName(), gameMessage);
+        table.addGameMessage(player.getFirstName(), gameMessage);
     }
 
     public String getTableName() {

@@ -5,29 +5,25 @@
  */
 package com.mycompany.blackjack.model;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-
-
-@SessionScoped
-@ManagedBean
 public class Player {
     
-    private String userName;
+    private String firstName;
+    
+    private String email;
     
     private int chips;
     
     public Player(){
-        userName = "guest";
+        firstName = "guest";
         chips = 1000;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public int getChips() {
@@ -47,6 +43,19 @@ public class Player {
         return amount;
     }
     
-    
+    public boolean isLoggedIn(){
+        if(email == null){
+            return false;
+        }
+        return true;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
     
 }

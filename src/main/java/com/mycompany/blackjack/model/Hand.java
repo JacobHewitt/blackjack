@@ -26,10 +26,13 @@ public class Hand {
     
     private boolean playersTurn = false;
     
+    private boolean canDouble = true;
+    
     private Action action;
     
-    public Hand(Player player) {
+    public Hand(Player player, int bet) {
         this.player = player;
+        this.bet = bet;
     }
 
     public void addCard(Card card) {
@@ -73,10 +76,6 @@ public class Hand {
         this.playerCards = playerCards;
     }
 
-    public void hit() {
-        
-    }
-
     
     private void setPlayerNumber() {
         int num = 0;
@@ -100,6 +99,7 @@ public class Hand {
     
     public void reset(){
         stand = false;
+        canDouble = true;
         bet= 0;
         playerCards.clear();
         playerNumber = 0;
@@ -119,14 +119,11 @@ public class Hand {
     
     public void setStand(){
         stand = true;
+        canDouble = false;
     }
     
     public boolean canDouble(){
-        if(playerCards.size() == 2){
-            return true;
-        }else{
-            return false;
-        }
+        return canDouble;
     }
     
     public boolean canSplit(){
@@ -145,5 +142,10 @@ public class Hand {
     public void addChips(int chips){
         bet+= chips;
     }
+    
+    public void setCanDouble(boolean in){
+        this.canDouble = in;
+    }
+    
 
 }

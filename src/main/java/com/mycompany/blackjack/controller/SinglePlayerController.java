@@ -8,22 +8,31 @@ package com.mycompany.blackjack.controller;
 import com.mycompany.blackjack.model.Card;
 import com.mycompany.blackjack.model.Hand;
 import com.mycompany.blackjack.model.SinglePlayerTable;
+import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  *
  * @author jakeh
  */
-@ManagedBean
+@Named
 @ViewScoped
-public class SinglePlayerController {
+public class SinglePlayerController implements Serializable{
+    
+    @Inject
+    SessionBean playerSession;
     
     @Inject
     private SinglePlayerTable table;
+    
+    private int betAmount;
+    
+    private String message;
+
     
     @PostConstruct
     public void init(){
@@ -31,7 +40,7 @@ public class SinglePlayerController {
     }
     
     public void start(){
-        table.startGame();
+        table.startGame(betAmount);
     }
 
     public SinglePlayerTable getTable() {
@@ -93,6 +102,38 @@ public class SinglePlayerController {
     
     public void doSplit(){
         table.doSplit();
+    }
+    
+    public boolean playerHasCards(){
+        if(table.getPlayer().getHands()!=null)return true;
+        return false;
+    }
+    
+    public int getBetAmount() {
+        return betAmount;
+    }
+
+    public void setBetAmount(int betAmount) {
+        this.betAmount = betAmount;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+    
+    public void sendMessage(){
+        table.addGameMessage(playerSession.getPlayer().getFirstName(), message);
+    }
+    
+    public boolean thisIsTheCurrentHand(Hand hand){
+        if(table.getCurrentHand()!=null){
+            return table.getCurrentHand().equals(hand);
+        }
+        return false;
     }
     
 }

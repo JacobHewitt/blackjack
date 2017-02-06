@@ -8,21 +8,27 @@ package com.mycompany.blackjack.controller;
 import com.mycompany.blackjack.model.Setup;
 import com.mycompany.blackjack.model.Table;
 import java.util.List;
-import javax.faces.bean.ManagedBean;
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  *
  * @author jakeh
  */
-@ManagedBean
+@Named
 public class IndexController {
-    
+
     @Inject
     private Setup game;
-    
-    public List<Table> getAllTables(){
+
+    @PostConstruct
+    public void init() {
+        
+    }
+
+    public List<Table> getAllTables() {
         return game.getTables();
     }
-    
+
 }

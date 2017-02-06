@@ -9,6 +9,12 @@
     <ui:define name="content">
 
         <b:container>
+
+            <f:metadata>
+                <f:viewParam name="code" value="#{sessionBean.code}" required="false"/>
+                <f:viewAction action="#{sessionBean.login()}" />
+            </f:metadata>
+
             <table>
                 <tr><td><h5>Table Name</h5></td><td><h5>Players</h5></td></tr>
                 <ui:repeat value="#{indexController.allTables}" var="table">
