@@ -1,0 +1,24 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html" 
+    xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:b="http://bootsfaces.net/ui">
+    
+    <b:navBar brand="Home" brandHref="#{request.contextPath}/index.xhtml" inverse="true" sticky="true">
+        <b:navbarLinks>
+
+            <b:navLink value="Single Player" href="#{request.contextPath}/singlePlayer.xhtml"></b:navLink>
+            
+            
+        </b:navbarLinks>
+        <b:navbarLinks class="navbar-right">
+            <b:navLink><h:outputText value="#{player.userName}" /></b:navLink>
+            <h:outputText value="Chips: #{player.chips}" />
+            
+        </b:navbarLinks>
+        
+        
+    </b:navBar>
+    
+    
+</ui:composition>

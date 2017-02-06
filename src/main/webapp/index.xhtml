@@ -1,28 +1,27 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html" 
-      xmlns:f="http://xmlns.jcp.org/jsf/core" 
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      >
+<ui:composition template="template/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html" 
+                xmlns:f="http://xmlns.jcp.org/jsf/core" 
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:b="http://bootsfaces.net/ui">
 
-    <h:head>
-        <link type="text/css" rel="stylesheet" href="css.css" />
-        <script src="js.js" type="text/javascript" />
-        <title>BlackJack</title>
-    </h:head>
 
-    <h:body>
+    <ui:define name="content">
 
-        <table>
-            <tr><td><h5>Table Name</h5></td><td><h5>Players</h5></td></tr>
-            <ui:repeat value="#{indexController.allTables}" var="table">
-                <tr>
-                    <td><h:outputText value="#{table.tableName}" /></td>
-                    <td><h:outputText value="#{table.getNumberOfPlayers()}" /></td>
-                    <td><input type="button" onclick="clickedTable('#{table.tableName}');" value="View Table" /></td>
-                </tr>
-            </ui:repeat>
+        <b:container>
+            <table>
+                <tr><td><h5>Table Name</h5></td><td><h5>Players</h5></td></tr>
+                <ui:repeat value="#{indexController.allTables}" var="table">
+                    <tr>
+                        <td><h:outputText value="#{table.tableName}" /></td>
+                        <td><h:outputText value="#{table.getNumberOfPlayers()}" /></td>
+                        <td><input type="button" onclick="clickedTable('#{table.tableName}');" value="View Table" /></td>
+                    </tr>
+                </ui:repeat>
 
-        </table>
+            </table>
 
-    </h:body>
-</html>
+        </b:container>
+
+    </ui:define>
+</ui:composition>

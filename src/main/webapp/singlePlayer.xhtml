@@ -1,0 +1,108 @@
+<ui:composition template="template/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html" 
+                xmlns:f="http://xmlns.jcp.org/jsf/core" 
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:b="http://bootsfaces.net/ui">
+
+
+    <ui:define name="content">
+
+        <b:container>
+            <h1>Single Player BlackJack</h1>
+
+
+            <h:form id="game" >
+
+                <div id="dealerCards" >
+                    <table>
+                        <tr>
+
+                            <ui:repeat value="#{singlePlayerController.dealerCards}" var="card">
+                                <td> <h:graphicImage url="http://localhost:8080/blackjack/cardImgs/#{card.toString()}" class="dealerCards" /></td>
+                            </ui:repeat>
+                        </tr>
+                    </table>
+                    <h2>Dealer Cards Value: <h:outputText value="#{singlePlayerController.dealerCardsValue}" /></h2>
+                </div>
+
+                <h:panelGroup rendered="#{singlePlayerController.currentlyPlaying}">
+                    <table >
+                        <ui:repeat value="#{singlePlayerController.playerHands}" var="hand">
+                            <tr>
+                                <ui:repeat value="#{hand.getPlayerCards()}" var="card">
+
+                                    <td class="playerCards" >
+                                        <h:graphicImage url="http://localhost:8080/blackjack/cardImgs/#{card.toString()}" class="cardImagesSinglePlayer"/>
+                                    </td>
+
+                                </ui:repeat>
+
+
+                                <td><h2>Player Cards Value: <h:outputText value="#{hand.playerNumber}" /></h2> </td>
+
+                                <h:panelGroup rendered="#{singlePlayerController.thisHandsTurn(hand)}" >
+                                    <td><p style="background-color:red;">Please Act</p></td>
+                                </h:panelGroup>
+
+                            </tr>
+                        </ui:repeat>
+
+
+                    </table>
+
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{!singlePlayerController.isCurrentlyPlaying()}">
+                    <b:commandButton value="Deal" actionListener="#{singlePlayerController.start()}" ajax="true" update="game gameMessages" />
+                </h:panelGroup>
+
+
+                <h:panelGroup rendered="#{singlePlayerController.isCurrentlyPlaying()}" >
+                    <b:commandButton value="Hit" actionListener="#{singlePlayerController.doHit()}" ajax="true" update="game" />
+                    <b:commandButton value="Stand" actionListener="#{singlePlayerController.doStand()}" ajax="true" update="game" />
+                    <h:panelGroup rendered="#{singlePlayerController.canDouble()}" >
+                        <b:commandButton value="Double" actionListener="#{singlePlayerController.doDouble()}" ajax="true" update="game" />
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{singlePlayerController.canSplit()}" >
+                        <b:commandButton value="Split" actionListener="#{singlePlayerController.doSplit()}" ajax="true" update="game"/>
+                    </h:panelGroup>
+                </h:panelGroup>
+            </h:form>
+
+
+
+            <h:form id="gameMessages" >
+
+                <div style="height: 300px; overflow: scroll;" >
+
+                    <h:dataTable value="#{singlePlayerController.table.gameMessages}" var="message" >
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Time" />
+                            </f:facet>
+                            <h:outputText value="#{message.time.toString()}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Author" />
+                            </f:facet>
+                            <h:outputText value="#{message.author}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Message" />
+                            </f:facet>
+                            <h:outputText value="#{message.message}"/>
+                        </h:column>
+                    </h:dataTable>
+                </div>
+            </h:form>
+
+
+
+
+        </b:container>
+
+    </ui:define>
+</ui:composition>

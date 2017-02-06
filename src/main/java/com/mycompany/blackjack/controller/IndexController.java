@@ -5,7 +5,7 @@
  */
 package com.mycompany.blackjack.controller;
 
-import com.mycompany.blackjack.model.Game;
+import com.mycompany.blackjack.model.Setup;
 import com.mycompany.blackjack.model.Table;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
@@ -19,7 +19,7 @@ import javax.inject.Inject;
 public class IndexController {
     
     @Inject
-    private Game game;
+    private Setup game;
     
     public List<Table> getAllTables(){
         return game.getTables();

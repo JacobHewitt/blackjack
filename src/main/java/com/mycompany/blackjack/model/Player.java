@@ -5,8 +5,6 @@
  */
 package com.mycompany.blackjack.model;
 
-import java.util.LinkedList;
-import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -20,7 +18,7 @@ public class Player {
     private int chips;
     
     public Player(){
-        userName = "default";
+        userName = "guest";
         chips = 1000;
     }
 

@@ -17,7 +17,7 @@ import javax.ejb.Startup;
  */
 @Startup
 @Singleton
-public class Game {
+public class Setup {
     
     private List<Table> tables;
     private List<Player> players;

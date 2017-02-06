@@ -6,7 +6,7 @@
 package com.mycompany.blackjack.controller;
 
 import com.mycompany.blackjack.model.Action;
-import com.mycompany.blackjack.model.Game;
+import com.mycompany.blackjack.model.Setup;
 import com.mycompany.blackjack.model.Hand;
 import com.mycompany.blackjack.model.Table;
 import com.mycompany.blackjack.model.Player;
@@ -27,7 +27,7 @@ public class TableController {
     private String tableName;
 
     @Inject
-    private Game game;
+    private Setup game;
 
     private Table table;
 

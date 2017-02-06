@@ -22,7 +22,7 @@
 
 
         <h:form id="nameForm" >
-            <h2>Welcome: <h:outputText value="#{tableController.player.userName}" /></h2>
+            <h2>Welcome: </h2>
             <h4>Chips: <h:outputText value="#{player.chips}" /></h4>
             <h:inputText id="username" value="#{tableController.player.userName}" />
             <b:commandButton value="Change UserName" actionListener="#{tableController.setPlayerName()}" ajax="true" update="@form"/>
