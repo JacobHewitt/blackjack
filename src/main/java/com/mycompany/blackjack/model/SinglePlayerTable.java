@@ -5,6 +5,7 @@
  */
 package com.mycompany.blackjack.model;
 
+import com.mycompany.blackjack.entitys.Player;
 import com.mycompany.blackjack.controller.SessionBean;
 import java.io.Serializable;
 import java.util.LinkedList;

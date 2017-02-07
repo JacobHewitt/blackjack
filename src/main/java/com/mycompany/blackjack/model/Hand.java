@@ -5,6 +5,7 @@
  */
 package com.mycompany.blackjack.model;
 
+import com.mycompany.blackjack.entitys.Player;
 import java.util.LinkedList;
 import java.util.List;
 

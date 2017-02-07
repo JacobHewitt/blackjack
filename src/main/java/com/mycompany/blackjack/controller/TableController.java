@@ -9,7 +9,7 @@ import com.mycompany.blackjack.model.Action;
 import com.mycompany.blackjack.model.Setup;
 import com.mycompany.blackjack.model.Hand;
 import com.mycompany.blackjack.model.Table;
-import com.mycompany.blackjack.model.Player;
+import com.mycompany.blackjack.entitys.Player;
 import com.mycompany.blackjack.model.Seat;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
