@@ -32,11 +32,15 @@ public class SinglePlayerController implements Serializable{
     private int betAmount;
     
     private String message;
+    
+    private boolean cardCountShowing;
+    
+    private int numberOfDecks;
 
     
     @PostConstruct
     public void init(){
-        
+        cardCountShowing = false;
     }
     
     public void start(){
@@ -136,4 +140,40 @@ public class SinglePlayerController implements Serializable{
         return false;
     }
     
+    public int cardsLeftInShoe(){
+        return table.cardsLeftInShoe();
+    }
+    
+    public boolean isCardCountShowing(){
+        return cardCountShowing;
+    }
+    
+    public void showCardCount(){
+        cardCountShowing = true;
+    }
+    
+    public void hideCardCount(){
+        cardCountShowing = false;
+    }
+    
+    public int getCardCount(){
+        return table.getCardCount();
+    }
+
+    public int getNumberOfDecks() {
+        return numberOfDecks;
+    }
+
+    public void setNumberOfDecks(int numberOfDecks) {
+        this.numberOfDecks = numberOfDecks;
+    }
+    
+    public void changeNumberOfDecks(){
+        table.setNumberOfDecks(numberOfDecks);
+        table.changeNumberOfDecks();
+    }
+    
+    public float getTrueCardCount(){
+        return table.getTrueCardCount();
+    }
 }

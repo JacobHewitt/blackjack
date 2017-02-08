@@ -21,7 +21,7 @@ import javax.inject.Inject;
 @Stateful
 public class SinglePlayerTable implements Serializable{
 
-    private Deck deck;
+    private Shoe shoe;
 
     private List<GameMessage> gameMessages = new LinkedList();
     
@@ -39,9 +39,12 @@ public class SinglePlayerTable implements Serializable{
     private boolean currentlyPlaying = false;
 
     private Hand currentHand;
+    
+    private int numberOfDecks;
 
     public SinglePlayerTable() {
-        deck = new Deck();
+        numberOfDecks = 6;
+        shoe = new Shoe(numberOfDecks);
         playerInSeat = new Seat(0);
         playerInSeat.setPlayer(player);
     }
@@ -56,6 +59,10 @@ public class SinglePlayerTable implements Serializable{
         dealerCards.clear();
         currentHand = null;
         playerInSeat.resetHands();
+        if(shoe.cardsLeft() <= 15){
+            addGameMessage("Game", "Changing Shoe");
+            shoe = new Shoe(numberOfDecks);
+        }
     }
 
     public void startGame(int betAmount) {
@@ -70,15 +77,14 @@ public class SinglePlayerTable implements Serializable{
         addGameMessage("Game", "STARTING NEW HAND");
         reset();
         currentlyPlaying = true;
-        deck.shuffle();
         playerInSeat.setBet(player.takeChips(betAmount));
 
         Hand toAdd = new Hand(playerInSeat.getPlayer(), playerInSeat.getBet());
-        toAdd.addCard(deck.drawCard());
+        toAdd.addCard(shoe.drawCard());
         playerInSeat.addHand(toAdd);
 
-        dealerCards.add(deck.drawCard());
-        playerInSeat.getHands().get(0).addCard(deck.drawCard());
+        dealerCards.add(shoe.drawCard());
+        playerInSeat.getHands().get(0).addCard(shoe.drawCard());
 
         setDealerNumber();
 
@@ -89,7 +95,7 @@ public class SinglePlayerTable implements Serializable{
     private void endOfAction() {
         System.out.println("FINDING WINNER ---------------------------");
         while (dealerNumber < 17) {
-            dealerCards.add(deck.drawCard());
+            dealerCards.add(shoe.drawCard());
             setDealerNumber();
         }
 
@@ -214,7 +220,7 @@ public class SinglePlayerTable implements Serializable{
     public void hit() {
         if (currentHand != null) {
             if (currentHand.isStand() == false) {
-                currentHand.addCard(deck.drawCard());
+                currentHand.addCard(shoe.drawCard());
                 if(currentHand.canDouble()){
                     currentHand.setCanDouble(false);
                 }
@@ -246,7 +252,7 @@ public class SinglePlayerTable implements Serializable{
 
     public void doDouble() {
         if (currentHand != null) {
-            currentHand.addCard(deck.drawCard());
+            currentHand.addCard(shoe.drawCard());
             currentHand.setStand();
             actionCompleted();
         }
@@ -310,5 +316,36 @@ public class SinglePlayerTable implements Serializable{
             endOfAction();
         }
     }
+    
+    public int cardsLeftInShoe(){
+        return shoe.cardsLeft();
+    }
+    
+    public int getCardCount(){
+        return shoe.getCardCount();
+    }
+    
+    public float getTrueCardCount(){
+        return shoe.getTrueCardCount();
+    }
+
+    public int getNumberOfDecks() {
+        return numberOfDecks;
+    }
+
+    public void setNumberOfDecks(int numberOfDecks) {
+        if(numberOfDecks < 1){
+            addGameMessage("Game", "You cant have lower than 1 deck.");
+            numberOfDecks = 1;
+        }
+        addGameMessage("Game", "Setting number of Decks: "+this.numberOfDecks);
+        this.numberOfDecks = numberOfDecks;
+    }
+    
+    public void changeNumberOfDecks(){
+        shoe = new Shoe(numberOfDecks);
+    }
+    
+    
 
 }

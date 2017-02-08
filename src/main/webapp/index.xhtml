@@ -14,7 +14,10 @@
                 <f:viewParam name="code" value="#{sessionBean.code}" required="false"/>
                 <f:viewAction action="#{sessionBean.login()}" />
             </f:metadata>
-
+            
+            <a href="#{request.contextPath}/singlePlayer.xhtml"><h1>Currently Single Player is the only game mode</h1></a>
+            <h2>multiplayer is still being developed</h2>
+            
             <table>
                 <tr><td><h5>Table Name</h5></td><td><h5>Players</h5></td></tr>
                 <ui:repeat value="#{indexController.allTables}" var="table">

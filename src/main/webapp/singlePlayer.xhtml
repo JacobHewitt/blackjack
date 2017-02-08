@@ -9,12 +9,62 @@
     <ui:define name="content">
 
         <b:container>
-            <h1>Single Player </h1>
-
-
             <h:form id="game" >
-                <p>Welcome: <h:outputText value="#{sessionBean.player.firstName}" /></p>
-                <p>Balance: <h:outputText value="#{sessionBean.player.chips}" /></p> 
+                <b:panel title="Table Settings" collapsed="true">
+                    <table>
+                        <tr>
+                            <td>
+                                <b:commandButton value="Show Card Count" rendered="#{!singlePlayerController.isCardCountShowing()}" actionListener="#{singlePlayerController.showCardCount()}" ajax="true" update="game" />
+                                <b:commandButton value="Hide Card Count" rendered="#{singlePlayerController.isCardCountShowing()}" actionListener="#{singlePlayerController.hideCardCount()}" ajax="true" update="game" />
+                            </td>
+                            <td>
+
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    <h:panelGroup rendered="#{!singlePlayerController.currentlyPlaying}" >
+                        <h:inputText value="#{singlePlayerController.numberOfDecks}" />
+                        <b:commandButton value="Change number of decks" actionListener="#{singlePlayerController.changeNumberOfDecks()}" ajax="true" update="game" />
+
+                    </h:panelGroup>
+
+                </b:panel>
+
+                <table id="singlePlayerHeaderTable">
+                    <tr>
+                        <td>
+                            <p>Welcome: <h:outputText value="#{sessionBean.player.firstName}" /></p>
+                        </td>
+                        <td>
+                            <p>Balance: <h:outputText value="#{sessionBean.player.chips}" /></p>
+                        </td>
+                        <td>
+                            <p>Cards Left in Shoe: <h:outputText value="#{singlePlayerController.cardsLeftInShoe()}" /></p>
+                        </td>
+                        <td>
+                            <p>Number of Decks in Shoe: <h:outputText value="#{singlePlayerController.table.numberOfDecks}" /></p>
+                        </td>
+                    </tr>
+                    <h:panelGroup rendered="#{singlePlayerController.isCardCountShowing()}">
+                        <tr>
+                            <td>
+                                <p>Card Count: </p>
+                            </td>
+                            <td>
+                                <h:outputText value="#{singlePlayerController.getCardCount()}" />
+                            </td>
+                            <td>
+                                <p>True Card Count: </p>
+                            </td>
+                            <td>
+                                <h:outputText value="#{singlePlayerController.getTrueCardCount()}" />
+                            </td>
+                        </tr>
+                    </h:panelGroup>
+                </table>
 
                 <div id="dealerCardsDiv" >
                     <table >
@@ -32,7 +82,7 @@
                         <table id="playerCardsTable">
                             <ui:repeat value="#{singlePlayerController.playerHands}" var="hand">
                                 <tr>
-                                
+
                                     <ui:repeat value="#{hand.getPlayerCards()}" var="card">
 
                                         <td>
@@ -54,7 +104,7 @@
 
                         </table>
                     </div>
-                    
+
                 </h:panelGroup>
 
                 <h:panelGroup rendered="#{!singlePlayerController.isCurrentlyPlaying()}">

@@ -18,11 +18,9 @@ import javax.ejb.Stateful;
 public class Deck {
     
     private List<Card> cards;
-    private List<Card> drawnCards;
     
     public Deck(){
         cards = new LinkedList<>();
-        drawnCards = new LinkedList<>();
         for(Rank rank : Rank.values()){
             for(Suit suit : Suit.values()){
                 cards.add(new Card(suit, rank));
@@ -30,16 +28,7 @@ public class Deck {
         }
     }
     
-    public void shuffle(){
-        cards.addAll(drawnCards);
-        drawnCards.clear();
-        Collections.shuffle(cards);
+    public List<Card> getCards(){
+        return cards;
     }
-    
-    public Card drawCard(){
-        Card toReturn = cards.remove(0);
-        drawnCards.add(toReturn);
-        return toReturn;
-    }
-    
 }

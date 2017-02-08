@@ -26,36 +26,36 @@ name = "java:global/blackjack/blackjackDS",
 @Singleton
 public class Setup {
     
-    private List<Table> tables;
+//    private List<Table> tables;
     private List<Player> players;
     
-    @PostConstruct
-    public void init(){
-        tables = new LinkedList<Table>();
-        players = new LinkedList<Player>();
-        createTable("firstTable");
-    }
-    
-    public List<Table> getTables(){
-        return tables;
-    }
-    
-    public Table getTable(String tableName){
-        for(Table table:tables){
-            if(table.getTableName().equals(tableName)){
-                return table;
-            }
-        }
-        return null;
-    }
-    
-    public void createTable(String tableName){
-        Table firstTable = new Table();
-        firstTable.setTableName(tableName);
-        tables.add(firstTable);
-        Thread tablesThread = new Thread(firstTable);
-        tablesThread.start();
-    }
+//    @PostConstruct
+//    public void init(){
+//        tables = new LinkedList<Table>();
+//        players = new LinkedList<Player>();
+//        createTable("firstTable");
+//    }
+//    
+//    public List<Table> getTables(){
+//        return tables;
+//    }
+//    
+//    public Table getTable(String tableName){
+//        for(Table table:tables){
+//            if(table.getTableName().equals(tableName)){
+//                return table;
+//            }
+//        }
+//        return null;
+//    }
+//    
+//    public void createTable(String tableName){
+//        Table firstTable = new Table();
+//        firstTable.setTableName(tableName);
+//        tables.add(firstTable);
+//        Thread tablesThread = new Thread(firstTable);
+//        tablesThread.start();
+//    }
     
     
     
